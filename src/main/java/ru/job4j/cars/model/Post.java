@@ -20,15 +20,24 @@ public class Post {
     @JoinColumn(name = "post_id")
     private List<PriceHistory> history;
 
+    @ManyToMany
+    @JoinTable(
+            name = "participates",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private List<User> participates;
+
     public Post() {
     }
 
-    public Post(int id, String text, LocalDateTime created, User user, List<PriceHistory> history) {
+    public Post(int id, String text, LocalDateTime created, User user, List<PriceHistory> history, List<User> participates) {
         this.id = id;
         this.text = text;
         this.created = created;
         this.user = user;
         this.history = history;
+        this.participates = participates;
     }
 
     public int getId() {
@@ -69,6 +78,14 @@ public class Post {
 
     public void setHistory(List<PriceHistory> history) {
         this.history = history;
+    }
+
+    public List<User> getParticipates() {
+        return participates;
+    }
+
+    public void setParticipates(List<User> participates) {
+        this.participates = participates;
     }
 
     @Override
