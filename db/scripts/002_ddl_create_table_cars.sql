@@ -1,6 +1,7 @@
 create table if not exists cars
 (
     id           serial primary key,
+    brand        varchar not null,
     body         varchar not null,
     equipment    varchar not null,
     transmission varchar not null,

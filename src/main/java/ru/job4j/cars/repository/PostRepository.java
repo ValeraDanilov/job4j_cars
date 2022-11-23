@@ -2,8 +2,10 @@ package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.job4j.cars.model.Car;
 import ru.job4j.cars.model.Post;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,11 +54,49 @@ public class PostRepository {
      * @return список постов.
      */
     public List<Post> findAllOrderById() {
-        return this.crudRepository.query("from Post post join fetch post.participates", Post.class);
+        return this.crudRepository.query("from Post post join fetch post.participates join fetch post.history", Post.class);
     }
 
     /**
-     * Найти пост по ID
+     * Найти объявления определенной марки.
+     *
+     * @param car car.
+     * @return список постов.
+     */
+    public List<Post> findBySpecificBrand(Car car) {
+        return this.crudRepository.query(
+                "from Post post join fetch post.participates join fetch post.history"
+                        + " where post.car.brand like :fKey", Post.class,
+                Map.of("fKey", "%" + car.getBrand() + "%"));
+    }
+
+    /**
+     * Найти объявления с фото.
+     *
+     * @param post post.
+     * @return список постов.
+     */
+    public List<Post> findByPhoto(Post post) {
+        return this.crudRepository.query("from Post post join fetch post.participates join fetch post.history "
+                        + "where photo :fKey", Post.class,
+                Map.of("fKey", Arrays.toString(post.getPhoto())));
+    }
+
+    /**
+     * Найти объявления за последний день.
+     *
+     * @param post post.
+     * @return список постов.
+     */
+    public List<Post> findByLastDay(Post post) {
+        return crudRepository.query(
+                "from Post post join fetch post.participates join fetch post.history where (extract(day from created))"
+                        + " = (extract(day from current_date)) :fKey", Post.class,
+                Map.of("fKey", post.getCreated()));
+    }
+
+    /**
+     * Найти объявления о ID
      *
      * @return пост.
      */

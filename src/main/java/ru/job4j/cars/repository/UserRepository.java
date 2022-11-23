@@ -55,18 +55,6 @@ public class UserRepository {
     }
 
     /**
-     * Найти пользователя по ID
-     *
-     * @return пользователь.
-     */
-    public Optional<User> findById(int userId) {
-        return this.crudRepository.optional(
-                "from User where id = :fId", User.class,
-                Map.of("fId", userId)
-        );
-    }
-
-    /**
      * Список пользователей по login LIKE %key%
      *
      * @param key key
@@ -76,6 +64,19 @@ public class UserRepository {
         return crudRepository.query(
                 "from User where login like :fKey", User.class,
                 Map.of("fKey", "%" + key + "%")
+        );
+    }
+
+    /**
+     * Найти пользователя по ID.
+     *
+     * @param userId ID.
+     * @return пользователь.
+     */
+    public Optional<User> findById(int userId) {
+        return this.crudRepository.optional(
+                "from User where id = :fId", User.class,
+                Map.of("fId", userId)
         );
     }
 

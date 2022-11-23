@@ -20,6 +20,7 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
+    private String brand;
     private String body;
     private String equipment;
     @ManyToOne
