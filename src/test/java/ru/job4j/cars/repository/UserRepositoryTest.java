@@ -30,7 +30,7 @@ public class UserRepositoryTest {
     public void tearDown() {
         var session = sessionFactory.openSession();
         var transaction = session.beginTransaction();
-        session.createQuery("delete from User ").executeUpdate();
+       // session.createQuery("delete from User ").executeUpdate();
         transaction.commit();
     }
 
@@ -38,8 +38,9 @@ public class UserRepositoryTest {
     public void create() {
         User user = new User();
         user.setLogin("Ira");
+        user.setPassword("1");
         userRepository.create(user);
-        Optional<User> findByUser = userRepository.findByLogin("Ira");
-        //  assertEquals("Ira", findByUser.get().getLogin());
+
+       // assertEquals("Ira", findByUser.get().getLogin());
     }
 }
