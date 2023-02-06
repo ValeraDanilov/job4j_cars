@@ -5,4 +5,4 @@ create table if not exists price_history
     after   bigint not null,
     created timestamp without time zone default now(),
     post_id int references post (id)
-);
+    );

@@ -18,8 +18,9 @@ public class EngineRepository {
      *
      * @param engine двигатель.
      */
-    public void create(Engine engine) {
+    public Engine create(Engine engine) {
         this.crudRepository.run(session -> session.persist(engine));
+        return engine;
     }
 
     /**

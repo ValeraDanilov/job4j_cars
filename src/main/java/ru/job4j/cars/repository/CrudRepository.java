@@ -29,9 +29,8 @@ public class CrudRepository {
             var sq = session
                     .createQuery(query);
             for (Map.Entry<String, Object> arg : args.entrySet()) {
-                sq.setParameter(arg.getKey(), arg.getValue());
+                sq.setParameter(arg.getKey(), arg.getValue()).executeUpdate();
             }
-            sq.executeUpdate();
         };
         run(command);
     }
@@ -50,7 +49,7 @@ public class CrudRepository {
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
-            return Optional.ofNullable(sq.getSingleResult());
+            return sq.list().stream().findFirst();
         };
         return tx(command);
     }

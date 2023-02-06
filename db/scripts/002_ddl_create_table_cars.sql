@@ -7,5 +7,5 @@ create table if not exists cars
     transmission varchar not null,
     driveUnit    varchar not null,
     color        varchar not null,
-    engine_id int not null references engine(id)
-    );
+    engine_id    int     not null references engine (id)
+);

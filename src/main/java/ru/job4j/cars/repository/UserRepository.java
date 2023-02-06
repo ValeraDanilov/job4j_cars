@@ -40,8 +40,8 @@ public class UserRepository {
      */
     public void delete(int userId) {
         this.crudRepository.run(
-                "delete from User where id = :fId",
-                Map.of("fId", userId)
+                "delete from User u where u.id = :Id",
+                Map.of("Id", userId)
         );
     }
 

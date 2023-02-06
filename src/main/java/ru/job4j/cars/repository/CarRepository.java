@@ -21,7 +21,7 @@ public class CarRepository {
      * @return car с id.
      */
     public Car create(Car car) {
-        this.crudRepository.run(session -> session.persist(car));
+        this.crudRepository.run(session -> session.save(car));
         return car;
     }
 
@@ -60,7 +60,7 @@ public class CarRepository {
      */
     public Optional<Car> findById(int carId) {
         return this.crudRepository.optional(
-                "from Car car join fetch car.drivers where id = :fId", Car.class,
+                "from Car car join fetch car.drivers where car.id = :fId", Car.class,
                 Map.of("fId", carId)
         );
     }

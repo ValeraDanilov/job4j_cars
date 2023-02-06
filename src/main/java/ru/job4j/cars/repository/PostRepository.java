@@ -23,7 +23,7 @@ public class PostRepository {
      * @return пост с id.
      */
     public Post create(Post post) {
-        this.crudRepository.run(session -> session.persist(post));
+        this.crudRepository.run(session -> session.save(post));
         return post;
     }
 
@@ -43,7 +43,7 @@ public class PostRepository {
      */
     public void delete(int postId) {
         this.crudRepository.run(
-                "delete from Post where id = :fId",
+                "delete from Post p where p.id = :fId",
                 Map.of("fId", postId)
         );
     }
@@ -102,7 +102,7 @@ public class PostRepository {
      */
     public Optional<Post> findById(int postId) {
         return this.crudRepository.optional(
-                "from Post post join fetch post.participates where id = :fId", Post.class,
+                "from Post post join fetch post.participates where post.id = :fId", Post.class,
                 Map.of("fId", postId)
         );
     }
