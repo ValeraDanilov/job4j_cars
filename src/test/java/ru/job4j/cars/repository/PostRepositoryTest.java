@@ -22,7 +22,6 @@ public class PostRepositoryTest {
     private static CarRepository carRepository;
     private static EngineRepository engineRepository;
     private static UserRepository userRepository;
-    private static PriceHistoryRepository priceHistoryRepository;
 
     @BeforeClass
     public static void initContext() {
@@ -32,7 +31,6 @@ public class PostRepositoryTest {
         carRepository = new CarRepository(new CrudRepository(sessionFactory));
         engineRepository = new EngineRepository(new CrudRepository(sessionFactory));
         userRepository = new UserRepository(new CrudRepository(sessionFactory));
-        priceHistoryRepository = new PriceHistoryRepository(new CrudRepository(sessionFactory));
     }
 
     @After
@@ -43,7 +41,6 @@ public class PostRepositoryTest {
         session.createQuery("delete from Car ").executeUpdate();
         session.createQuery("delete from Engine ").executeUpdate();
         session.createQuery("delete from User ").executeUpdate();
-        session.createQuery("delete from PriceHistory ").executeUpdate();
         transaction.commit();
     }
 
@@ -106,7 +103,7 @@ public class PostRepositoryTest {
                 new Post(secondPost.getId(), "test2", LocalDateTime.now(), null, user, car, null, Set.of(user)),
                 new Post(thirdPost.getId(), "test3", LocalDateTime.now(), null, user, car, null, Set.of(user))
         );
-        assertEquals(postRepository.findAllOrderById().size(), res);
+        assertEquals(postRepository.findAllOrderById(), res);
     }
 
     @Test

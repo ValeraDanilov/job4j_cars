@@ -54,7 +54,7 @@ public class PostRepository {
      * @return список постов.
      */
     public List<Post> findAllOrderById() {
-        return this.crudRepository.query("from Post post join fetch post.participates join fetch post.history", Post.class);
+        return this.crudRepository.query("from Post post join fetch post.history join fetch post.participates", Post.class);
     }
 
     /**
