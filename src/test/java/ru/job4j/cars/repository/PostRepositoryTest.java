@@ -22,6 +22,7 @@ public class PostRepositoryTest {
     private static CarRepository carRepository;
     private static EngineRepository engineRepository;
     private static UserRepository userRepository;
+    private static PriceHistoryRepository priceHistory;
 
     @BeforeClass
     public static void initContext() {
@@ -31,6 +32,7 @@ public class PostRepositoryTest {
         carRepository = new CarRepository(new CrudRepository(sessionFactory));
         engineRepository = new EngineRepository(new CrudRepository(sessionFactory));
         userRepository = new UserRepository(new CrudRepository(sessionFactory));
+        priceHistory = new PriceHistoryRepository(new CrudRepository(sessionFactory));
     }
 
     @After
@@ -41,6 +43,7 @@ public class PostRepositoryTest {
         session.createQuery("delete from Car ").executeUpdate();
         session.createQuery("delete from Engine ").executeUpdate();
         session.createQuery("delete from User ").executeUpdate();
+        session.createQuery("delete from PriceHistory ").executeUpdate();
         transaction.commit();
     }
 
@@ -92,16 +95,18 @@ public class PostRepositoryTest {
         engineRepository.create(engine);
         Car car = new Car(0, "test", "test", "test", engine, null, "test", "test", "test");
         carRepository.create(car);
-        Post firstPost = new Post(0, "test1", LocalDateTime.now(), null, user, car, null, Set.of(user));
-        Post secondPost = new Post(0, "test2", LocalDateTime.now(), null, user, car, null, Set.of(user));
-        Post thirdPost = new Post(0, "test3", LocalDateTime.now(), null, user, car, null, Set.of(user));
+        PriceHistory price = new PriceHistory(0, 100, 200, LocalDateTime.now());
+        priceHistory.create(price);
+        Post firstPost = new Post(0, "test1", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user));
+        Post secondPost = new Post(0, "test2", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user));
+        Post thirdPost = new Post(0, "test3", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user));
         postRepository.create(firstPost);
         postRepository.create(secondPost);
         postRepository.create(thirdPost);
         List<Post> res = List.of(
-                new Post(firstPost.getId(), "test1", LocalDateTime.now(), null, user, car, null, Set.of(user)),
-                new Post(secondPost.getId(), "test2", LocalDateTime.now(), null, user, car, null, Set.of(user)),
-                new Post(thirdPost.getId(), "test3", LocalDateTime.now(), null, user, car, null, Set.of(user))
+                new Post(firstPost.getId(), "test1", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user)),
+                new Post(secondPost.getId(), "test2", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user)),
+                new Post(thirdPost.getId(), "test3", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user))
         );
         assertEquals(postRepository.findAllOrderById(), res);
     }

@@ -16,7 +16,7 @@ public class PriceHistoryRepository {
 
 
     public PriceHistory create(PriceHistory priceHistory) {
-        this.crudRepository.run(session -> session.persist(priceHistory));
+        this.crudRepository.run(session -> session.save(priceHistory));
         return priceHistory;
     }
 
