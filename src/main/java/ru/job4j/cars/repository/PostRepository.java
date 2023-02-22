@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.Car;
 import ru.job4j.cars.model.Post;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,9 @@ public class PostRepository {
      */
     public List<Post> findBySpecificBrand(Car car) {
         return this.crudRepository.query(
-                "from Post post join fetch post.participates join fetch post.history"
+                "from Post post"
+                        + " left join fetch post.history"
+                        + " left join fetch post.participates"
                         + " where post.car.brand like :fKey", Post.class,
                 Map.of("fKey", "%" + car.getBrand() + "%"));
     }
@@ -75,26 +78,22 @@ public class PostRepository {
     /**
      * Найти объявления с фото.
      *
-     * @param post post.
      * @return список постов.
      */
-    public List<Post> findByPhoto(Post post) {
-        return this.crudRepository.query("from Post post join fetch post.participates join fetch post.history "
-                        + "where photo :fKey", Post.class,
-                Map.of("fKey", Arrays.toString(post.getPhoto())));
+    public List<Post> findByPhoto() {
+        return this.crudRepository.query("from Post where photo is not null", Post.class);
     }
 
     /**
      * Найти объявления за последний день.
      *
-     * @param post post.
      * @return список постов.
      */
-    public List<Post> findByLastDay(Post post) {
+    public List<Post> findByLastDay() {
         return crudRepository.query(
-                "from Post post join fetch post.participates join fetch post.history where (extract(day from created))"
-                        + " = (extract(day from current_date)) :fKey", Post.class,
-                Map.of("fKey", post.getCreated()));
+                "from Post where created > :fTime",
+                Post.class,
+                Map.of("fTime", LocalDateTime.now().minusDays(1)));
     }
 
     /**

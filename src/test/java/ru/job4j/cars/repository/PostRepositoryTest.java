@@ -10,6 +10,7 @@ import org.junit.Test;
 import ru.job4j.cars.model.*;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Set;
 
@@ -39,11 +40,11 @@ public class PostRepositoryTest {
     public void tearDown() {
         var session = sessionFactory.openSession();
         var transaction = session.beginTransaction();
+        session.createQuery("delete from PriceHistory ").executeUpdate();
         session.createQuery("delete from Post ").executeUpdate();
         session.createQuery("delete from Car ").executeUpdate();
         session.createQuery("delete from Engine ").executeUpdate();
         session.createQuery("delete from User ").executeUpdate();
-        session.createQuery("delete from PriceHistory ").executeUpdate();
         transaction.commit();
     }
 
@@ -97,9 +98,9 @@ public class PostRepositoryTest {
         carRepository.create(car);
         PriceHistory price = new PriceHistory(0, 100, 200, LocalDateTime.now());
         priceHistory.create(price);
-        Post firstPost = new Post(0, "test1", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user));
-        Post secondPost = new Post(0, "test2", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user));
-        Post thirdPost = new Post(0, "test3", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user));
+        Post firstPost = new Post(0, "test1", LocalDateTime.now(), null, user, car, null, Set.of(user));
+        Post secondPost = new Post(0, "test2", LocalDateTime.now(), null, user, car, null, Set.of(user));
+        Post thirdPost = new Post(0, "test3", LocalDateTime.now(), null, user, car, null, Set.of(user));
         postRepository.create(firstPost);
         postRepository.create(secondPost);
         postRepository.create(thirdPost);
@@ -113,13 +114,67 @@ public class PostRepositoryTest {
 
     @Test
     public void findBySpecificBrand() {
+        User user = new User(0, "Ira", "1");
+        userRepository.create(user);
+        Engine engine = new Engine(0, "test");
+        engineRepository.create(engine);
+        Car car = new Car(0, "Audi", "test", "test", engine, null, "test", "test", "test");
+        carRepository.create(car);
+        Car bmw = new Car(0, "BMW", "test", "test", engine, null, "test", "test", "test");
+        carRepository.create(bmw);
+        PriceHistory price = new PriceHistory(0, 100, 200, LocalDateTime.now());
+        priceHistory.create(price);
+        Post firstPost = new Post(0, "test1", LocalDateTime.now(), null, user, car, null, Set.of(user));
+        Post secondPost = new Post(0, "test2", LocalDateTime.now(), null, user, bmw, null, Set.of(user));
+        Post thirdPost = new Post(0, "test3", LocalDateTime.now(), null, user, bmw, null, Set.of(user));
+        postRepository.create(firstPost);
+        postRepository.create(secondPost);
+        postRepository.create(thirdPost);
+        List<Post> res = List.of(
+                new Post(secondPost.getId(), "test2", LocalDateTime.now(), null, user, bmw, Set.of(price), Set.of(user)),
+                new Post(thirdPost.getId(), "test3", LocalDateTime.now(), null, user, bmw, Set.of(price), Set.of(user))
+        );
+        assertEquals(postRepository.findBySpecificBrand(bmw), res);
     }
 
     @Test
     public void findByPhoto() {
+        User user = new User(0, "Ira", "1");
+        userRepository.create(user);
+        Engine engine = new Engine(0, "test");
+        engineRepository.create(engine);
+        Car car = new Car(0, "Audi", "test", "test", engine, null, "test", "test", "test");
+        carRepository.create(car);
+        PriceHistory price = new PriceHistory(0, 100, 200, LocalDateTime.now());
+        priceHistory.create(price);
+        Post firstPost = new Post(0, "test1", LocalDateTime.now(), null, user, car, null, Set.of(user));
+        Post secondPost = new Post(0, "test2", LocalDateTime.of(2022, Month.FEBRUARY, 3, 6, 30, 40, 50000), null, user, car, null, Set.of(user));
+        Post thirdPost = new Post(0, "test3", LocalDateTime.of(2022, Month.MAY, 22, 12, 30, 26, 50000), null, user, car, null, Set.of(user));
+        postRepository.create(firstPost);
+        postRepository.create(secondPost);
+        postRepository.create(thirdPost);
+        assertNull(postRepository.findByPhoto().stream().findFirst().orElse(null));
     }
 
     @Test
     public void findByLastDay() {
+        User user = new User(0, "Ira", "1");
+        userRepository.create(user);
+        Engine engine = new Engine(0, "test");
+        engineRepository.create(engine);
+        Car car = new Car(0, "Audi", "test", "test", engine, null, "test", "test", "test");
+        carRepository.create(car);
+        PriceHistory price = new PriceHistory(0, 100, 200, LocalDateTime.now());
+        priceHistory.create(price);
+        Post firstPost = new Post(0, "test1", LocalDateTime.now(), null, user, car, null, Set.of(user));
+        Post secondPost = new Post(0, "test2", LocalDateTime.of(2022, Month.FEBRUARY, 3, 6, 30, 40, 50000), null, user, car, null, Set.of(user));
+        Post thirdPost = new Post(0, "test3", LocalDateTime.of(2022, Month.MAY, 22, 12, 30, 26, 50000), null, user, car, null, Set.of(user));
+        postRepository.create(firstPost);
+        postRepository.create(secondPost);
+        postRepository.create(thirdPost);
+        List<Post> res = List.of(
+                new Post(firstPost.getId(), "test1", LocalDateTime.now(), null, user, car, Set.of(price), Set.of(user))
+        );
+        assertEquals(postRepository.findByLastDay(), res);
     }
 }

@@ -30,7 +30,7 @@ public class PriceHistoryRepository {
     }
 
     public void delete(int priceHistoryId) {
-        this.crudRepository.run("delete from PriceHistory where id = :Id", Map.of("Id", priceHistoryId));
+        this.crudRepository.run("delete from PriceHistory p where p.id = :Id", Map.of("Id", priceHistoryId));
     }
 
     public List<PriceHistory> findAllOrderById() {

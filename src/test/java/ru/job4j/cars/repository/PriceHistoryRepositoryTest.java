@@ -8,7 +8,6 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ru.job4j.cars.model.PriceHistory;
-import ru.job4j.cars.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
